@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 
 #my create import
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, update_session_auth_hash
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 
 #need import for Registration Form With Additional Fields
 from .forms import UserRegistrationForm
@@ -56,3 +56,22 @@ def register(request):
 
     context = {'form': form}
     return render(request, 'users/register.html', context)
+
+
+
+#password change funtion
+def password_change(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = PasswordChangeForm(user=request.user, data=request.POST)
+            if form.is_valid():
+                form.save()
+                update_session_auth_hash(request, form.user)
+                return redirect('login')
+
+        else:
+            form = PasswordChangeForm(user = request.user)
+            return render(request, 'users/passwordchange.html', {'form':form})
+
+    else:
+        return redirect('login')
