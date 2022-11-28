@@ -1,10 +1,16 @@
 {% extends 'base/base.html' %}
 
-{% block title %}<title>custom_register</title>{% endblock title %}
 
+{% block title %}<title>Login</title>{% endblock title %}
+
+{% block nevber %}
+<li><a href="{% url 'register' %}">SignUp</a></li>
+<li><a href="{% url 'customregister' %}">Custom Register</a></li>
+{% endblock nevber %}
 
 {% block content %}
-<h1 style="font-family:verdana;">This is a custom_register Page</h1>
+<h1 style="font-family:verdana;">This is a Login Page</h1>
+
     <form action="" method= "POST">
         {% csrf_token %}
 

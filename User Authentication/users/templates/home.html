@@ -2,6 +2,14 @@
 
 {% load static %}
 
+{% block nevber %}
+<li><a href="{% url 'register' %}">SignUp</a></li>
+<li><a href="{% url 'customregister' %}">Custom Register</a></li>
+<li><a href="{% url 'login' %}">Login</a></li>
+<li><a href="{% url 'logout' %}">Logout</a></li>
+<li><a href="{% url 'passwordchange' %}">Password change</a></li>
+<li><a href="{% url 'passwordchangewo' %}">PC without old password </a></li>
+{% endblock nevber %}
 
     {% block title %}
     <title>Document</title>

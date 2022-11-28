@@ -2,8 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 
 #my create import
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, SetPasswordForm
 from .forms import UserRegistrationForm
+
+#my create import for password change
+from django.contrib.auth import update_session_auth_hash
+
+
+#login required
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -13,7 +20,7 @@ from .forms import UserRegistrationForm
 def home(request):
     return render(request, 'home.html')
 
-
+#registration
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -28,7 +35,7 @@ def register(request):
     return render(request,"user/register.html", context)
 
 
-
+#custom registration
 def custom_register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
@@ -43,3 +50,48 @@ def custom_register(request):
 
     context = {'form':form}
     return render(request,"user/custom_register.html", context)
+
+
+
+#passwordchange
+@login_required(login_url='login')
+def passwordchange(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = PasswordChangeForm(user=request.user, data=request.POST)
+
+            if form.is_valid():
+                form.save()
+                update_session_auth_hash(request, form.user)
+
+                return redirect('login')
+
+        else:
+            form = PasswordChangeForm(user=request.user)
+            context = {'form':form}
+            return render(request, 'user/passwordchange.html', context)
+
+    else:
+        return redirect('login')
+
+
+#passwordchange without old password
+@login_required(login_url='login')
+def passwordchange_op(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = SetPasswordForm(user=request.user, data=request.POST)
+
+            if form.is_valid():
+                form.save()
+                update_session_auth_hash(request, form.user)
+
+                return redirect('login')
+
+        else:
+            form = SetPasswordForm(user=request.user)
+            context = {'form':form}
+            return render(request, 'user/passwordchange_op.html', context)
+
+    else:
+        return redirect('login')
